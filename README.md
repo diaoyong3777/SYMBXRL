@@ -26,6 +26,7 @@ conda activate symbxrl
 ### 环境注意事项
 - **依赖冲突**: 可以临时修改 `webcolors>=24.6.0`，安装完成后恢复至 1.13 版本
 - **Graphviz**: A2 项目需要安装 Graphviz 用于决策图可视化
+- 环境配置好后注意在constants.py中修改项目根路径(复制你本地的项目的绝对路径)
 
 ## 项目结构
 
