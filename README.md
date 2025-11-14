@@ -1,186 +1,151 @@
 # SYMBXRL: Symbolic Explainable Deep Reinforcement Learning for Mobile Networks
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/905837844.svg)](https://doi.org/10.5281/zenodo.15745270)
+这是 SYMBXRL 项目的完整复现环境，包含两个独立的 DRL 应用案例：网络切片调度和大规模 MIMO 资源调度。
 
-This repository contains the code and resources for the research paper accepted at **IEEE INFOCOM 2025**:
+## 项目概述
 
-> **SYMBXRL: Symbolic Explainable Deep Reinforcement Learning for Mobile Networks**  
-> *Abhishek Duttagupta∗†♢, MohammadErfan Jabbari∗♢, Claudio Fiandrino∗, Marco Fiore∗, and Joerg Widmer∗*  
->  
-> ∗IMDEA Networks Institute, Spain  
-> †Universidad Carlos III de Madrid, Spain  
->  
-> Email: {name.surname}@imdea.org  
->  
-> ♢ These authors contributed equally to this work.
+SYMBXRL 是一个基于符号人工智能的可解释深度强化学习框架，通过一阶逻辑（FOL）为 DRL 智能体生成人类可理解的解释。本项目包含：
 
-## Abstract
-The operation of future 6th-generation (6G) mobile networks will increasingly rely on the ability of Deep Reinforcement Learning (DRL) to optimize network decisions in real-time. However, trained DRL agents are closed-boxes and inherently difficult to explain, which hinders their adoption in production settings. In this paper, we present **SymBXRL**, a novel technique for **Explainable Reinforcement Learning (XRL)** that synthesizes human-interpretable explanations for DRL agents. SymBXRL leverages symbolic AI to produce explanations where key concepts and their relationships are described via intuitive symbols and rules. We validate SymBXRL in practical network management use cases, proving that it not only improves the semantics of the explanations but also enables intent-based programmatic action steering, improving the median cumulative reward by 12% over a pure DRL solution.
+- **A1**: 网络切片和调度策略（RAN slicing and scheduling）
+- **A2**: 大规模 MIMO 调度（Massive MIMO scheduling）
 
-## Citation
-If you find this work useful, please cite our paper:
+## 测试环境
 
-```bibtex
-@inproceedings{symbxrl2025,
-  TITLE="{SymbXRL:} Symbolic Explainable Deep Reinforcement Learning for Mobile Networks",
-  AUTHOR="Abhishek Duttagupta and MohammadErfan Jabbari and Claudio Fiandrino and Marco Fiore and Joerg Widmer",
-  booktitle={IEEE INFOCOM 2025},
-  year={2025},
-    note={{Available online: }\url{https://github.com/RAINet-Lab/symbxrl}}
-}
+- **操作系统**: Linux
+- **显卡**: NVIDIA A10，21 GB
+- **Python**: 3.10.14
+
+## 环境配置
+
+### 创建 Conda 环境
+```bash
+conda create -n symbxrl python=3.10.14
+conda activate symbxrl
 ```
 
-This paper introduces SYMBXRL, a novel technique for Explainable Reinforcement Learning (XRL) that synthesizes human-interpretable explanations for Deep Reinforcement Learning (DRL) agents operating in mobile network environments. SYMBXRL leverages symbolic AI, specifically First-Order Logic (FOL), to generate explanations that describe key concepts, relationships, and the decision-making process of DRL agents through intuitive symbols and rules. This approach offers more comprehensible descriptions of agent behavior compared to existing XRL methods.
+### 环境注意事项
+- **依赖冲突**: 可以临时修改 `webcolors>=24.6.0`，安装完成后恢复至 1.13 版本
+- **Graphviz**: A2 项目需要安装 Graphviz 用于决策图可视化
 
-**Key Contributions:**
+## 项目结构
 
--   Proposes SYMBXRL, a new XRL framework for DRL agents, employing symbolic representations and FOL for generating human-interpretable explanations.
--   Validates SYMBXRL in two diverse use cases:
-    -   **A1-NetworkSlicingSchedulingPolicy:** DRL agent controlling Radio Access Network (RAN) slicing and scheduling.
-    -   **A2-MIMOResourceScheduler:** DRL agent for resource scheduling in Massive MIMO.
--   Demonstrates that SYMBXRL's symbolic representation enables Intent-based Action Steering (IAS), improving cumulative rewards and enforcing operational constraints.
--   Shows that IAS outperforms existing XRL methods like METIS in terms of reward improvement.
-
-Refer [Manuscript-details](./Manuscript-details) for the complete paper and further details.
-
-**Repository Structure:**
 ```
 SYMBXRL/
-├── A1-NetworkSlicingSchedulingPolicy/ # Code for the A1 agent (RAN slicing and scheduling)
-│ ├── data/ # Data files (raw and processed)
-│ ├── results/ # Generated results (graphs, heatmaps, etc.)
-│ ├── script/ # Python scripts for data processing, symbolic representation, analysis
-│ ├── 1_data_preprocess.ipynb # Jupyter Notebook: Loads and preprocesses data for A1 agent
-│ ├── 2_probabilistic_analysis.ipynb # Jupyter Notebook: Probabilistic analysis (distributions, heatmaps)
-│ ├── 3_graph_visualization.ipynb # Jupyter Notebook: Graph-based analysis and visualization
-│ ├── 4_Plots_for_Paper.ipynb # Jupyter Notebook: Generates plots used in the paper
-│ ├── clean_exps.py # Python script: Handles and cleans experiment data
-│ ├── constants.py # Python script: Defines project constants
-│ ├── experiments_constants.py # Python script: Defines agent-specific constants and configurations
-│ ├── load_data.py # Python script: Loads and preprocesses data
-│ ├── p_square_quantile_approximator.py# Python script: Implements P² quantile approximation
-│ ├── probability_comparison.py # Python script: Functions for probability distribution comparison
-│ └── symbolic_representation.py # Python script: Creates symbolic representations from numerical data
-│ └── utils.py # Python script: Utility functions
-│ └── README.md # README for the A1 agent
-├── A2-MIMOResourceScheduler/ # Code for the A2 agent (Massive MIMO resource scheduling)
-│ ├── Datasets/ # Training and testing datasets
-│ │ ├── LOS_highspeed1_64_7.hdf5 # HDF5 files for different scenarios (LOS, NLOS, varying speeds)
-│ │ ├── LOS_highspeed2_64_7.hdf5
-│ │ ├── LOS_lowspeed_64_7.hdf5
-│ │ ├── LOS_test_64_7.hdf5
-│ │ ├── NLOS_highspeed1_64_7.hdf5
-│ │ ├── NLOS_highspeed2_64_7.hdf5
-│ │ ├── NLOS_lowspeed_64_7.hdf5
-│ │ └── NLOS_test_64_7.hdf5
-│ ├── DQN/ # Implementation of the DQN agent
-│ │ ├── DQNAgent.py # DQN agent class
-│ │ ├── DQN_main.py # Main script for training the DQN agent
-│ │ └── DQN_test.py # Script for testing the trained DQN agent
-│ ├── SAC/ # Implementation of the SAC agent
-│ │ ├── action_space.py # Defines the action space for the agent
-│ │ ├── model.py # Neural network models for SAC
-│ │ ├── replay_memory.py # Replay buffer implementation
-│ │ ├── sac.py # SAC algorithm implementation
-│ │ ├── SAC_main.py # Main script for training the SAC agent
-│ │ ├── SAC_test.py # Script for testing the trained SAC agent
-│ │ ├── SACArgs.py # Arguments for SAC
-│ │ ├── smartfunc.py # Utility functions for SAC
-│ │ ├── Action_Steering/ # Code related to Action Steering
-│ │ │ ├── action_steering_utils.py # Utility functions for action steering
-│ │ │ ├── decision_graph.py # Creates a decision graph based on agent's behavior
-│ │ │ ├── experiment_constants.py # Constants for experiments
-│ │ │ ├── p_square_quantile_approximator.py # P-square algorithm for quantile approximation
-│ │ │ ├── symbolic_representation.py # Functions to generate symbolic representations
-│ │ │ ├── 1. SAC_Agent_action_steering.ipynb # Jupyter Notebook: Implements and tests action steering
-│ │ │ └── 2. paper_plots.ipynb # Jupyter Notebook: Generates plots for the paper
-│ │ └── Agents_Numeric_Symbolic_Raw_Data/ # Data for plotting and evaluation (CSV files)
-│ │ └── processed_csvs/ # Processed data
-│ │ └── processed_action_steering_results.csv
-│ ├── custom_mimo_env.py # Custom Gym environment for MIMO
-│ ├── models/ # Trained model parameters
-│ │ ├── DQN_956.59_300_dtLOS_HS2_final.pth
-│ │ ├── SACG_884.53_551_dtLOS_HS2_checkpointed.pth
-│ │ └── SACG_1989.88_205_dtNLOS_HS2_final.pth
-│ ├── .gitignore # Git ignore file
-│ ├── init.py # Init file
-│ └── README.md # README for the A2 agent
-├── paper-results/ # Directory containing the results presented in the paper.
-├── .gitignore # Git ignore file
-├── init.py
-├── conda-environment.yml # Conda environment file
-├── constants.py # Project-wide constants
-├── pip-requirements.txt # Pip requirements file
-└── README.md # Main README file (this file)
+├── A1-NetworkSlicingSchedulingPolicy/    # 第一个项目 (RAN slicing and scheduling)
+│   ├── data/                             # 数据目录
+│   │   └── symbxrl/
+│   │       └── embb-trf1/
+│   │           └── 3-users_exp-4/
+│   │               ├── cleaned-data/     # (1) 清理好的数据
+│   │               │   └── embb-trf1_3-users_exp-4_cleaned_experiment_data.csv
+│   │               └── embb-trf1_3-users_exp-4_quantile_data.csv  # (2) 符号化后的数据
+│   ├── results/                          # 结果输出目录
+│   │   ├── Probabilistic_Analysis/
+│   │   │   ├── prob_dist/                # (3) 概率分布图
+│   │   │   │   └── embb-trf1-users3/
+│   │   │   │       └── Effect_Probability_Distribution_embb-trf1_user_3.pdf
+│   │   │   └── heatmaps/                 # (4) 热力图
+│   │   │       └── embb-trf1-users3/
+│   │   │           └── Effect_Probabilities_Heatmaps_embb-trf1_user_3.pdf
+│   │   ├── decision_graphs/              # (5) 知识图谱
+│   │   │   └── embb-trf1-users3/
+│   │   │       └── Decision_Graph_embb-trf1_user-3_slice-0.pdf
+│   │   └── Plots_for_Paper/              # (x) 论文用图汇总
+│   ├── script/                           # 脚本文件
+│   │   ├── experiments_constants.py      # 实验参数常量配置
+│   │   ├── load_data.py                  # 加载原生数据，清洗、缓存、返回
+│   │   ├── clean_exps.py                 # load_data.py 的重复文件（实际未使用）
+│   │   ├── p_square_quantile_approximator.py  # P² 分位数估计算法
+│   │   ├── probability_comparison.py     # 离散概率分布比较（JS散度、Hellinger距离）
+│   │   ├── symbolic_representation.py    # SRG - 数据符号化 (1) => (2)
+│   │   └── utils.py                      # 工具函数
+│   ├── 1_data_preprocess.ipynb           # SRG + EE - 概率分布（Jupyter可视化）
+│   ├── 2_probabilistic_analysis.ipynb    # SRG + EE - 概率分布 + 热力图（保存PDF）(3)、(4)
+│   ├── 3_graph_visualization.ipynb       # SRG + EE - KG分析 (5)
+│   ├── 4_Plots_for_Paper.ipynb           # 汇总 - 状态图、概率分布、KG、热力图 (x)
+│   └── README.md
+└── A2-MassiveMIMOScheduler/              # 第二个项目 (Massive MIMO scheduling)
+    ├── custom_mimo_env.py                # 环境类
+    ├── action_steering_utils.py          # IAS 底层代码
+    ├── decision_graph.py                 # 决策图辅助工具
+    ├── 1_*.ipynb                         # 主要执行文件
+    ├── 2_*.ipynb                         # 主要执行文件
+    └── (其他相关文件)
 ```
 
-**Getting Started:**
+## 复现指南
 
-1. **Clone the repository:**
+### A1 项目：网络切片和调度策略
 
-    ```bash
-    git clone <repository_url>
-    cd SYMBXRL
-    ```
+#### 核心组件
+- **SRG (Symbolic Representation Generator)**: 符号表示生成器
+- **EE (Explanation Engine)**: 解释引擎
 
-2. **Environment Setup:**
+#### 复现步骤
 
-    -   It is recommended to create a virtual environment (e.g., using `conda` or `venv`) to manage dependencies.
-    -   Each agent's directory may contain its specific environment file:
-        - For the A1 agent, refer to the instructions in `A1-NetworkSlicingSchedulingPolicy/README.md`.
-        - For the A2 agent, refer to the instructions in `A2-MIMOResourceScheduler/README.md`.
+1. **数据预处理**
+   - 运行 `1_data_preprocess.ipynb` 进行数据预处理和符号化
 
-        To run the code, you can create an environment using conda:
+2. **概率分析**
+   - 运行 `2_probabilistic_analysis.ipynb` 生成：
+     - 概率分布图 (3)
+     - 热力图 (4)
 
-        ```bash
-        conda env create -f conda-environment.yml
-        conda activate symbxrl-env
-        ```
+3. **知识图谱分析**
+   - 运行 `3_graph_visualization.ipynb` 生成决策图谱 (5)
 
-        or using pip:
+4. **论文图表生成**
+   - 运行 `4_Plots_for_Paper.ipynb` 汇总所有图表 (x)
+   - **注意**: 执行时先运行导包和工具单元，然后跳转到 "Without Decimal Points by filtering out empty cells"（倒数第三个单元）
+   - **已知问题**: 生成的 PDF 底色可能不是纯白色，可能与依赖包版本有关
 
-        ```bash
-        pip install -r pip-requirements.txt
-        ```
+#### 数据说明
+- **原始数据**: 未提供，使用项目已处理的数据
+- **处理数据**: 位于 `data/symbxrl/` 目录下
+- **符号化数据**: 已缓存，可卸载重新生成
 
-        then update the root path of the project in the `constants.py` file.
-        ```
-        #### Root Address of the project
-        PROJ_ADDR = '<path_to_project>'
-        ```
+### A2 项目：大规模 MIMO 调度
 
-3. **Explore the Code:**
+#### 环境依赖
+```bash
+conda install graphviz -c conda-forge  # EE-决策图可视化工具
+```
 
-    -   Navigate to the `A1-NetworkSlicingSchedulingPolicy/` or `A2-MIMOResourceScheduler/` directories to explore the code for each agent.
-    -   Each agent's directory contains Jupyter Notebooks and Python scripts for data processing, analysis, and visualization.
-    -   Refer to the agent-specific README files (e.g., `A1-NetworkSlicingSchedulingPolicy/README.md`, `A2-MIMOResourceScheduler/README.md`) for detailed instructions on how to run the code.
+#### 复现步骤
+1. 直接运行 `1_*.ipynb` 和 `2_*.ipynb` 即可完成复现
+2. 核心文件说明：
+   - `custom_mimo_env.py`: 环境类
+   - `action_steering_utils.py`: IAS（基于意图的动作引导）底层实现
+   - `decision_graph.py`: 决策图生成工具，IAS 的辅助组件
 
-**Data:**
+## 核心功能模块
 
--   **A1 Agent:** The `A1-NetworkSlicingSchedulingPolicy/data/` directory is intended to store the raw and processed data for the A1 agent. You will need to place the raw data files in this directory. The raw data is not included in the repository. Refer to `A1-NetworkSlicingSchedulingPolicy/README.md` for more information about how to obtain and place it in the correct directory.
--   **A2 Agent:** The `A2-MIMOResourceScheduler/Datasets/` directory contains the datasets (HDF5 files) for the A2 agent. The datasets are already included in the repository.
--   The `paper-results/` folder contains the data used for the results presented in the paper.
+### SRG (符号表示生成器)
+- 将数值状态和动作转换为 FOL 术语
+- 使用 P² 算法进行在线分位数计算
+- 生成符号化数据存储
 
-**Results:**
+### EE (解释引擎)
+- **概率分析**: 状态分布和动作相关性分析
+- **KG分析**: 构建知识图谱揭示决策模式
+- **可视化输出**: 概率分布图、热力图、决策图谱
 
--   The `results/` directory within each agent's folder will store the generated results (plots, heatmaps, graphs) after running the analysis scripts or notebooks.
-
-**Contributing:**
-
--   If you wish to contribute to this project, please fork the repository and submit a pull request.
-
-**License:**
-
--   This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-**Contact:**
-
--   For any questions or issues, please open an issue on the GitHub repository.
-
-**Disclaimer**
-
-- THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+### IAS (基于意图的动作引导)
+- 奖励最大化
+- 决策条件约束
+- 加速学习
 
 
 
----
+## 引用
+
+如使用本项目，请引用原始论文：
+```
+S. Duttagupta, M. Jabbari, C. Fiandrino, M. Fiore, and J. Widmer, 
+"SYMBXRL: Symbolic Explainable Deep Reinforcement Learning for Mobile Networks," 
+IEEE INFOCOM 2025.
+```
+
+## 许可证
+
+本项目基于原始 SYMBXRL 项目代码，遵循相应的许可证条款。
